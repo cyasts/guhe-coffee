@@ -1,0 +1,117 @@
+<view class="container">
+  <!-- 左侧菜单 -->
+  <scroll-view class="left" scroll-y="true" scroll-into-view="{{vertToView}}" scroll-with-animation="{{true}}">
+    <view class="item {{activeType==item.id?'active':''}}" data-id="b{{item.id}}" bindtap="changeType" wx:for="{{category}}" wx:key="{{item.id}}" data-index="{{item.id}}">
+      {{item.name}}
+      <view wx:if="{{item.tip}}" class="tip">{{item.tip}}</view>
+    </view>
+  </scroll-view>
+  <!-- 右侧菜单 -->
+  <scroll-view class="right" bindscroll="vertScroll" scroll-with-animation="true" scroll-into-view="{{vertToView}}" scroll-y="true" style="height: {{asideheight}}px;">
+    <!-- veri-out -->
+    <view id="b{{item.id}}" class="selection" wx:for="{{category}}" wx:key="item.id">
+      <!-- 分类标识 -->
+      <view>
+        <view>{{item.name}}</view>
+        <view />
+      </view>
+      <view class="content">
+        <!-- veri-in -->
+        <view id="{{product.english_name}}" class="item" wx:for="{{goodslist[item.id]}}" wx:key="index.english_name" wx:for-item="product">
+          <view bindtap="showmodal" data-index="{{item.index}}" data-id="{{product.id}}">
+            <image src="{{product.pic}}" />
+          </view>
+          <view class="item-detail">
+            <view>{{product.name}}</view>
+            <view>{{product.english_name}}</view>
+            <view>￥{{product.price}}</view>
+          </view>
+          <view wx:if="{{product.useconfig}}" class="addcartfont" bindtap="showmodal" data-id="{{product.id}}">选规格</view>
+          <view wx:else class="iconfont icon-jia" bindtap="addcart" data-id="{{product.id}}" />
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+  <!-- 购物车栏 begin -->
+  <view class="cart-box" wx:if="{{cart.length > 0}}">
+    <view class="mark" bindtap="openCartPopup">
+      <image src="/static/images/menu/cart.png" class="cart-img"></image>
+      <view class="tag">{{cart.length}}</view>
+    </view>
+    <view class="price">￥{{totalPrice}}</view>
+    <button type="primary" class="pay-btn" bindTap="toPay" disabled="disabledPay">
+      去结算
+    </button>
+  </view>
+  <!-- 购物车栏 end -->
+
+
+</view>
+<!-- 商品详情详情列表 -->
+<view hidden="{{ishiddenmodal}}" class="modal">
+  <scroll-view scroll-x="true" bindscroll="horiScroll" style="width:100%" class="scroll-view-H" scroll-with-animation="true">
+    <!-- out -->
+    <view class="Hori-item">
+      <!-- in -->
+      <view class="Hori-item-cell" style="width: {{asidewidth}}px;">
+        <view class="modal-content">
+          <icon bindtap="closemodal" data-id="{{product.english_name}}" type="clear" size="23" class="close-icon" />
+          <!-- <view>{{product.id}}</view> -->
+          <image class="img" src="{{good.pic}}" />
+          <view class="title">{{good.name}}</view>
+          <view wx:if="{{good.useconfig}}">
+            <!-- 自定义组件menu 监听选择项 -->
+            <view wx:for="{{good.config}}" wx:for-index="key" wx:for-item="value">
+              <menu list="{{value}}" name="{{key}}" bind:choose="choose" />
+            </view>
+            <view class="intro">{{product.content}}</view>
+          </view>
+          <view class="P2">
+            <view> {{good.name}}</view>
+            <view> ￥{{good.price}}</view>
+            <view class="counter">
+              <view class="btn jian" bindtap="jian">-</view>
+              <view>{{buyCount}}</view>
+              <view class="btn jia" bindtap="jia">+</view>
+            </view>
+          </view>
+          <view class="btns">
+            <!-- 做唯一标识的应该是id 不是count -->
+            <view bindtap="addcart" data-buyCount="{{buyCount}}">
+              加入购物车
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+</view>
+<!-- 购物车详情popup -->
+<view wx:if="{{cartPopupVisible}}" class="cart-popup">
+    <view class="cart-top">
+      <text bindTap="handleCartClear">清空</text>
+    </view>
+    <scroll-view class="cart-list" scroll-y>
+      <view class="cart-wrapper">
+        <view class="cart-item" wx:for="{{cart}}">
+          <view class="cart-left">
+            <view class="cart-name">{{ item.name }}</view>
+            <view class="cart-props">二是</view>
+          </view>
+          <view class="cart-center">
+            <text>￥{{ item.price }}</text>
+          </view>
+          <view class="cart-right">
+            <button type="default" size="mini"  plain="{{true}}" class="cart-btn" hover-class="none" bindTap="handleCartItemReduce(index)">
+              <view class="iconfont iconsami-select"></view>
+            </button>
+            <view class="cart-number">{{ item.buyCount }}</view>
+            <button type="primary" class="cart-btn" size="min" hover-class="none" bindTap="handleCartItemAdd(index)">
+              <view class="iconfont iconadd-select"></view>
+            </button>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+</view>
+<!-- 购物车详情popup end -->

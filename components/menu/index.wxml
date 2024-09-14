@@ -1,0 +1,6 @@
+<view class="list">
+  <view class="list-title">{{name}} </view>
+  <view class="list-menu" wx:for="{{list}}" wx:key="item">
+    <view data-id="{{item}}" bindtap="changetype" class="item {{item===actived?'active':''}}">{{item}}</view>
+  </view>
+</view>
