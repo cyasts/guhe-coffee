@@ -29,6 +29,8 @@ Page({
     selectionTopArr: [],
     containerTop: 0,
     activeType: 1, //默认选中的左列哪一项
+
+    show: false, // 底部pupop
   },
   // 加入购物车
   addcart(e) {
@@ -191,7 +193,7 @@ Page({
       })
     }
     this.setData({
-      cartPopupVisible:false
+      cartPopupVisible: true
     })
     
     
@@ -295,5 +297,13 @@ Page({
     this.setData({
       totalPrice : price
     })
-  }
+  },
+  showPopup() {
+    const show = !this.data.show
+    this.setData({ show });
+  },
+
+  onClose() {
+    this.setData({ show: false });
+  },
 })

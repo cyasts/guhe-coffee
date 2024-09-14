@@ -3,5 +3,18 @@
   "projectname": "coffee",
   "setting": {
     "compileHotReLoad": true
+  },
+  "condition": {
+    "miniprogram": {
+      "list": [
+        {
+          "name": "购物车",
+          "pathName": "pages/shopcart/shopcart",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        }
+      ]
+    }
   }
 }

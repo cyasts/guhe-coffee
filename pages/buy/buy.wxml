@@ -34,7 +34,7 @@
   </scroll-view>
   <!-- 购物车栏 begin -->
   <view class="cart-box" wx:if="{{cart.length > 0}}">
-    <view class="mark" bindtap="openCartPopup">
+    <view class="mark" bind:tap="showPopup">
       <image src="/static/images/menu/cart.png" class="cart-img"></image>
       <view class="tag">{{cart.length}}</view>
     </view>
@@ -71,7 +71,7 @@
             <view> ￥{{good.price}}</view>
             <view class="counter">
               <view class="btn jian" bindtap="jian">-</view>
-              <view>{{buyCount}}</view>
+              <view class="counter_count">{{buyCount}}</view>
               <view class="btn jia" bindtap="jia">+</view>
             </view>
           </view>
@@ -86,8 +86,42 @@
     </view>
   </scroll-view>
 </view>
+<!-- 购物车结算栏 -->
+<van-popup show="{{ show }}" bind:close="onClose" custom-style="custom-style" position="bottom" bind:close="onClose" safe-area-inset-bottom>
+  <view class="select_product">
+    <view class="select_product_wrapepr">
+      <view class="title">
+        <text class="product-select">已选商品</text>
+        <text class="clear_product">清空</text>
+      </view>
+      <scroll-view class="product_wrapper" scroll-y="true">
+        <view class="product_list" wx:for="{{4}}">
+          <view class="product_info">
+            <view class="product_image">
+              <image src="cloud://guhe-coffee-9gt2e9vm45166fdd.6775-guhe-coffee-9gt2e9vm45166fdd-1329268219/weda-uploader/d3476231f7c5d430f2b12e5b92aedfb5-燕麦拿铁.jpg" mode="" />
+              <view class="product_details">
+                <view class="product_name">情满仲秋-3人套餐</view>
+                <view class="product_name">情满仲秋-3人套餐</view>
+              </view>
+            </view>
+          </view>
+          <view class="product_count_price">
+            <text class="product_price">￥17.9</text>
+            <view class="product_count">
+              <view class="counter">
+                <view class="btn jian" bindtap="jian">-</view>
+                <view class="counter_count">{{buyCount}}</view>
+                <view class="btn jia" bindtap="jia">+</view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+  </view>
+</van-popup>
 <!-- 购物车详情popup -->
-<view wx:if="{{cartPopupVisible}}" class="cart-popup">
+<!-- <view wx:if="{{cartPopupVisible}}" class="cart-popup">
     <view class="cart-top">
       <text bindTap="handleCartClear">清空</text>
     </view>
@@ -97,7 +131,7 @@
           <view class="cart-left">
             <view class="cart-name">{{ item.name }}</view>
             <view class="cart-props">二是</view>
-          </view>
+          </view> 
           <view class="cart-center">
             <text>￥{{ item.price }}</text>
           </view>
@@ -113,5 +147,5 @@
         </view>
       </view>
     </scroll-view>
-</view>
+</view> -->
 <!-- 购物车详情popup end -->
