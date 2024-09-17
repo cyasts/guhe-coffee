@@ -16,11 +16,6 @@ Page({
     goods:{},
     good:{},
     cart:[],
-    goodconfig:{},
-    sweetnesss:{},
-    tempetures:{},
-    sizes:{},
-    configs:{},
     cartPopupVisible : false,
     buyCount: 1,
     totalPrice:0,
@@ -35,31 +30,43 @@ Page({
   // 加入购物车
   addcart(e) {
     console.log(e)
-    var id = e.currentTarget.id
-
-    var exist = false;
-    var index = -1;
+    var id = e.currentTarget.dataset.id
+    console.log(id)
+    console.log(typeof id)
+    var cart = this.data.cart
+    
     var good = this.data.good
-    if (id != "" ) {
+    
+    if (typeof id === "number") {
       good = this.data.goods[id]
     }
-
-    var cart = this.data.cart
-    for (var i=0; i<cart.length; ++i) {
-      if (cart[i].id == good.id) {
-        index = i
-        exist = true;
-        break
-      }
-    }
+    console.log(good)
+    var res = this.findCartItem(good.id, good.select)
+    console.log(res)
+    var exist = res.exist
+    var index = res.index
+    
     if (exist) {
       var buyCount = parseInt(this.data.buyCount) || 1;
       //如果存在，则增加该商品的购买数量
       cart[index].buyCount = (parseInt(cart[index].buyCount) || 0) + buyCount
-    } else {
+    } 
+    else {
       // 如果不存在，传入该商品信息
       good.buyCount = 0
       good.buyCount = this.data.buyCount
+      console.log(good)
+      if (good.useconfig) {
+        good.selectstr = ""
+        var init = false
+        for (var key in good.select) {
+          if (init) {
+            good.selectstr += "/"
+          }
+          good.selectstr += good.select[key]
+          init = true
+        }
+      }
       cart.push(good)
     }
     this.setData({
@@ -68,7 +75,7 @@ Page({
       cart:cart
     })
     this.calCartPrice()
-    // wx.setStorageSync('cartItems', this.data.cart) 
+      // wx.setStorageSync('cartItems', this.data.cart) 
     try {
       //添加购物车的消息提示框
       wx.showToast({
@@ -84,11 +91,10 @@ Page({
     }
   },
   choose:function(e) {
-    console.log(e)
     var good = this.data.good
     good.select[e.detail.name] = e.detail.id
     this.data.good = good
-    console.log(good)
+    console.log(this.data.cart)
     // good.selectd[e.currentTarget.id] = e._relatedInfo.anchorTargetText
   },
   jian() {
@@ -102,27 +108,24 @@ Page({
       buyCount: ++this.data.buyCount
     })
   },
-  // 选择规格
-
   closemodal(e) {
     console.log(e.detail)
     this.setData({
       ishiddenmodal: true,
       buyCount: 1, //重置为零
+      good:{}
       // itemCount: 0,
     })
   },
   // 点击跳转详情
   showmodal(e) {
     var id = e.currentTarget.dataset.id
-    var good = this.data.goods[id]
-    console.log(good)
+    var good = JSON.parse(JSON.stringify(this.data.goods[id]));
     good.select = {}
     this.setData({
       ishiddenmodal: false,
       good : good
     })
-    this.data.good
   },
   // 左侧分类跳转
   changeType(e) {
@@ -286,9 +289,7 @@ Page({
     this.data.cartPopupVisible = show
   },
   calCartPrice : function() {
-    
     var cart = this.data.cart
-    console.log(cart)
     var price = 0
     for (var i=0; i<cart.length; ++i) {
       price = price + cart[i].buyCount * cart[i].price
@@ -306,4 +307,73 @@ Page({
   onClose() {
     this.setData({ show: false });
   },
+  findCartItem:function(id, select) {
+    var cart = this.data.cart
+    console.log(cart)
+    for (var i=0; i<cart.length; ++i) {
+      if (cart[i].id !== id) {
+        continue
+      }
+      console.log(cart[i])
+      var selectequal = true;
+      if (cart[i].useconfig) {
+        for (var key in select) {
+          if (cart[i].select[key] !== select[key]) {
+            selectequal = false;
+            break
+          }
+        }
+      }
+      if (selectequal) {
+        return {
+          exist : true,
+          index : i
+        }
+      }
+    }
+    return {
+      exist : false,
+      index : -1
+    }
+  },
+  increaseCartItem : function(e) {
+    console.log(e)
+    var res = this.findCartItem(e.currentTarget.dataset.id, e.currentTarget.dataset.select)
+    var cart = this.data.cart
+    var index = res.index
+    cart[index].buyCount++
+    this.setData({
+      cart : cart
+    })
+    this.calCartPrice()
+  },
+  decreaseCartItem : function(e) {
+    console.log(e)
+    var res = this.findCartItem(e.currentTarget.dataset.id, e.currentTarget.dataset.select)
+    var cart = this.data.cart
+    var index = res.index
+    cart[index].buyCount--
+    if (cart[index].buyCount == 0) {
+      cart.splice(index, 1)
+    }
+    var visible = true
+    if (cart.length <= 0) {
+      visible = false
+    }
+    this.setData({
+      cart : cart,
+      show : visible
+    })
+    this.calCartPrice()
+  },
+  emptyCart:function() {
+    this.setData({
+      cart : [],
+      show : false
+    })
+  },
+  toPay:function() {
+    var cart = this.data.cart
+    console.log(cart)
+  }
 })
