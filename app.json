@@ -1,11 +1,8 @@
 {
   "pages": [
     "pages/index/index",
-    "pages/buy/buy",
-    "pages/address/address",
     "pages/shopcart/shopcart",
-    "pages/mine/mine",
-    "pages/room/room"
+    "pages/mine/mine"
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -18,20 +15,13 @@
     "list": [
       {
         "pagePath": "pages/index/index",
-        "text": "首页",
-        "iconPath": "assests/icons/bear.png",
-        "selectedIconPath": "assests/icons/bearing.png"
-      },
-      {
-        "pagePath": "pages/buy/buy",
-        "text": "菜单",
+        "text": "点餐",
         "iconPath": "assests/icons/coffee.png",
         "selectedIconPath": "assests/icons/coffeeing.png"
       },
-      
       {
         "pagePath": "pages/shopcart/shopcart",
-        "text": "购物车",
+        "text": "取餐",
         "iconPath": "assests/icons/buycar.png",
         "selectedIconPath": "assests/icons/buycaring.png"
       },

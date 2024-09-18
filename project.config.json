@@ -1,5 +1,4 @@
 {
-  "appid": "wxaf6bf92f01a68645",
   "compileType": "miniprogram",
   "libVersion": "3.5.6",
   "packOptions": {
@@ -24,5 +23,7 @@
   "editorSetting": {
     "tabIndent": "insertSpaces",
     "tabSize": 2
-  }
+  },
+  "cloudfunctionRoot": "cloudfunctions/",
+  "cloudfunctionTemplateRoot": "cloudfunctionTemplate/"
 }

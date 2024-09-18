@@ -1,3 +1,6 @@
 {
-  "usingComponents": {}
+  "usingComponents": {
+    "menu":"/components/menu/index",
+    "van-popup": "@vant/weapp/popup/index"
+  }
 }
