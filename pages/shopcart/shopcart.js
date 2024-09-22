@@ -6,7 +6,6 @@ Page({
    */
   data: {
     carts: [],
-    // 判断购物车是否有数据
     hasList: false,
     selectAllStatus: false,
     totalPrice: ''
@@ -49,6 +48,7 @@ Page({
         console.error('云函数调用失败', err)
       }
     })
+    
   },
 
   /**

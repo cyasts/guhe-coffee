@@ -2,7 +2,7 @@
 App({
   onLaunch: function() {
     wx.cloud.init({
-      env:'guhe-coffee-9gt2e9vm45166fdd',
+      env:'coffee-guhe-0g72nnjpcb27842d',
       traceUser: true
     })
     // 展示本地存储能力

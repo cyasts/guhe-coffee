@@ -252,6 +252,7 @@ Page({
     const db = wx.cloud.database()
     db.collection("category").orderBy("id", "asc").get()
       .then(res => {
+        console.log(res.data)
         this.data.category = res.data
         this.setData({
           category: res.data

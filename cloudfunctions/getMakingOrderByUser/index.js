@@ -1,6 +1,5 @@
 // 云函数入口文件
 const cloud = require('wx-server-sdk')
-const { CREATE_INSTANCE } = require('XrFrame/kanata/lib/kanata')
 
 // 初始化云开发
 cloud.init({
@@ -21,6 +20,7 @@ exports.main = async (event, context) => {
     const orderRes = await db.collection('Order')
       .where({
         user_id: openid,  // 根据 openid 过滤订单
+        order_payment: true,
         order_status:_.in([0, 1])
       })
       .get()

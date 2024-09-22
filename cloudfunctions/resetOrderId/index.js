@@ -5,7 +5,7 @@ cloud.init();
 const db = cloud.database();
 
 exports.main = async (event, context) => {
-  const orderCounter = db.collection('orderCounter');
+  const orderCounter = db.collection('OrderCounter');
   
   // 定义要使用的自定义字段
   const customOrderField = 'documentid';
@@ -21,7 +21,7 @@ exports.main = async (event, context) => {
             [customOrderField]: customOrderIdValue
         }).update({
       data: {
-        currentOrderId: 1,  // 重置为1
+        orderIdCounter: 1,  // 重置为1
         lastResetDate: todayStr  // 更新重置日期
       }
     });

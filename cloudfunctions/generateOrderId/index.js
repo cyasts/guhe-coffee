@@ -6,24 +6,19 @@ const db = cloud.database();
 const _ = db.command;
 
 exports.main = async (event, context) => {
-    const orderCounter = db.collection('orderCounter');
+    const orderCounter = db.collection('OrderCounter');
 
     // 定义要使用的自定义字段
     const customOrderField = 'documentid';
     const customOrderIdValue = 'orderIdCounter';  // 自定义 orderId 值
 
     try {
-        // 查询文档是否存在，使用自定义的 orderId 字段
-        const docCheck = await orderCounter.where({
-            [customOrderField]: customOrderIdValue
-        }).get();
-
         // 使用自定义字段更新订单号
         await orderCounter.where({
             [customOrderField]: customOrderIdValue
         }).update({
             data: {
-                currentOrderId: _.inc(1)  // 自增1
+                orderIdCounter: _.inc(1)  // 自增1
             }
         });
 
@@ -32,7 +27,7 @@ exports.main = async (event, context) => {
             [customOrderField]: customOrderIdValue
         }).get();
 
-        const newOrderId = counterRes.data[0].currentOrderId;
+        const newOrderId = counterRes.data[0].orderIdCounter;
 
         // 返回成功结果和新生成的订单号
         return {
