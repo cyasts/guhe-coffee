@@ -376,76 +376,32 @@ Page({
     })
   },
   toPay: function () {
-    var cart = this.data.cart
-    var price = this.data.totalPrice
-    var openid = app.globalData.userOpenId
+    const that = this;
     wx.cloud.callFunction({
-      name: 'generateOrderId',
+      name: 'payOrder',  // 调用云函数生成预支付订单
+      data: {
+        amount: that.data.totalPrice * 100,  // 支付金额
+        products: that.data.cart  // 商品信息
+      },
       success: res => {
-        console.log(res)
-        if (res.result.success) {
-          const orderId = res.result.orderId;
-          console.log('生成的订单号:', orderId);
-
-          // 获取当前时间
-          let date = new Date();
-          // 格式化创建时间为 2020-05-09 21:30
-          var creat_date_time = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' '
-           + date.getHours() + ':' + date.getMinutes()
-          console.log(creat_date_time)
-          
-          // 将订单信息存储到数据库
-          const orderData = {
-            order_id: orderId,
-            user_id: openid,
-            total_amount: price, // 总金额
-            order_time: creat_date_time,
-            order_status: "已付款，制作中"
-          };
-
-          const db = wx.cloud.database();
-          db.collection('Order').add({
-            data: orderData,
-            success: function (addRes) {
-              console.log('订单保存成功', addRes._id);
-            },
-            fail: function (err) {
-              console.error('订单保存失败', err);
-            }
-          });
-
-
-          for (var i = 0; i < cart.length; ++i) {
-            var goodDtail = {}
-            goodDtail.order_id = orderId,
-              goodDtail.unit_price = cart[i].price
-            goodDtail.quantity = cart[i].buyCount
-            goodDtail.product_id = cart[i].id
-            goodDtail.order_time = new Date()
-            if (cart[i].useconfig) {
-              goodDtail.product_config = cart[i].selectstr
-            }
-            db.collection('Order_Detail').add({
-              data: goodDtail,
-              success: function (addRes) {
-                console.log('订单保存成功', addRes._id);
-              },
-              fail: function (err) {
-                console.error('订单保存失败', err);
-              }
-            });
+        const payment = res.result.payment;
+        console.log(payment)
+        wx.requestPayment({
+          ...payment,  // 传递支付参数
+          success: (res) => {
+            this.setData({
+              cart: []
+            })
+            console.log('支付成功', res);
+          },
+          fail: (err) => {
+            console.error('支付失败', err);
           }
-        } else {
-          console.error('生成订单号失败', res);
-        }
+        });
       },
       fail: err => {
         console.error('云函数调用失败', err);
       }
     });
-    this.setData({
-      cart: []
-    })
-    console.log(cart)
   }
 })

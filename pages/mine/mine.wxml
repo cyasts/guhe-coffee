@@ -1,6 +1,5 @@
 <!--pages/mine/index.wxml-->
 <view class="main">
-  <image class="bg" src="../../assests/icons/bg1.jpg" />
   <view class="header">
     <!-- 获取用户信息，昵称 -->
     <open-data class="thumb" type="userAvatarUrl" open-gid="" />
