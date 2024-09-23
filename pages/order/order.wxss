@@ -1,0 +1,124 @@
+/* pages/order/order.wxss */
+.order_cntainer {
+  width: 100vw;
+  height: 100vh;
+  background: rgba(153, 153, 153, 0.4);
+}
+
+.order_tab {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 80rpx;
+  background: #fff;
+  color: #999;
+}
+
+.order_tab view {
+  display: flex;
+  align-items: center;
+  height: 80rpx;
+}
+
+.active_order {
+  color: #000;
+  border-bottom: 2px solid #000;
+}
+
+.order_tips {
+  font-size: 26rpx;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 80rpx;
+  margin: 0rpx 0;
+}
+
+.order_type {
+  display: flex;
+  justify-content: space-between;
+}
+
+.order_type text {
+  padding: 10rpx 10rpx;
+  margin-right: 30rpx;
+  background: #fff;
+  border-radius: 10rpx;
+}
+
+.order_active {
+  color: burlywood;
+}
+
+.order_list {
+  width: 100vw;
+  height: 100vh;
+}
+
+.order_list .order_list_item {
+  background: #fff;
+  font-size: 24rpx;
+  padding: 15rpx;
+  margin-bottom: 15rpx;
+}
+
+.order_info {
+  display: flex;
+  justify-content: space-between;
+  height: 40rpx;
+  align-items: center;
+}
+
+.order_info .order_shop_name {
+  font-size: 26rpx; 
+  font-weight: 400;
+}
+
+.order_info .order_status {
+  font-size: 24rpx;
+  color: #333333;
+}
+
+.order_image {
+  height: 80rpx;
+  width: 100%;
+  margin: 10rpx 0;
+}
+
+.order_image image {
+  width: 50rpx;
+  height: 80rpx;
+  background: red;
+}
+
+.order_details_info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+.order_details {
+  display: flex;
+  flex-direction: column;
+}
+
+.order_details view {
+  padding-bottom: 10rpx;
+}
+
+.order_btn {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.order_btn text {
+  padding: 10rpx;
+  border: 1px solid grey;
+  margin-right: 10rpx;
+  border-radius: 5rpx;
+}
+
+.order_btn text.active {
+  color: burlywood;
+  border-color: burlywood;
+}

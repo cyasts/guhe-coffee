@@ -2,7 +2,8 @@
   "pages": [
     "pages/index/index",
     "pages/shopcart/shopcart",
-    "pages/mine/mine"
+    "pages/mine/mine",
+    "pages/order/order"
   ],
   "window": {
     "backgroundTextStyle": "light",

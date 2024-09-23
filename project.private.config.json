@@ -10,6 +10,13 @@
     "miniprogram": {
       "list": [
         {
+          "name": "我的订单",
+          "pathName": "pages/order/order",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
           "name": "购物车",
           "pathName": "pages/shopcart/shopcart",
           "query": "",
