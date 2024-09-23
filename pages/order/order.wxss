@@ -80,6 +80,8 @@
 }
 
 .order_image {
+  display: flex;
+  align-items: center;
   height: 80rpx;
   width: 100%;
   margin: 10rpx 0;
@@ -89,6 +91,10 @@
   width: 50rpx;
   height: 80rpx;
   background: red;
+}
+
+.order_image text {
+  margin-left: 20rpx;
 }
 
 .order_details_info {

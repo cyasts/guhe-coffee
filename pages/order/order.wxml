@@ -4,13 +4,13 @@
     <view class="current_order active_order">当前订单</view>
     <view class="history_order">历史订单</view>
   </view>
-  <view class="order_tips">
+  <!-- <view class="order_tips">
     <view class="order_type">
       <text class="order_active">门店订单</text>
       <text>百货订单</text>
     </view>
     <view class="order_invoice">批量开票</view>
-  </view>
+  </view> -->
   <!-- 订单列表 -->
   <view class="order_list">
     <view class="order_list_item" wx:for="{{5}}" wx:key="{{index}}">
@@ -20,6 +20,7 @@
       </view>
       <view class="order_image">
         <image src="" mode="" />
+        <text>这是一段文字</text>
       </view>
       <view class="order_details_info">
         <view class="order_details">
