@@ -24,8 +24,7 @@
 
   <view wx:else>
     <view class="cart-no-data">
-      <view>您还没有点单</view>
-			<view>快去犒劳一下自己吧~</view>
+      <view>当前分类无订单</view>
     </view>
   </view>
 </view>

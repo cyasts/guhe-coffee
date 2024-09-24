@@ -10,6 +10,7 @@ Page({
     vertToView: 'b1',
     RIGHT_BAR_HEIGHT: 20,
     RIGHT_ITEM_HEIGHT: 98,
+    pageHeight: 0,
 
     category: [],
     goodslist: {},
@@ -19,6 +20,8 @@ Page({
     cartPopupVisible: false,
     buyCount: 1,
     totalPrice: 0,
+
+    inproducing : false,
 
     ishiddenmodal: true,
     selectionTopArr: [],
@@ -68,6 +71,7 @@ Page({
       }
       cart.push(good)
     }
+    console.log(cart)
     this.setData({
       ishiddenmodal: true,
       buyCount: 1,
@@ -103,8 +107,11 @@ Page({
     })
   },
   jia() {
+    if (++this.data.buyCount > this.data.good.inventory) {
+      this.data.buyCount = this.data.good.inventory
+    }
     this.setData({
-      buyCount: ++this.data.buyCount
+      buyCount: this.data.buyCount
     })
   },
   closemodal(e) {
@@ -118,6 +125,7 @@ Page({
   },
   // 点击跳转详情
   showmodal(e) {
+    console.log(e)
     var id = e.currentTarget.dataset.id
     var good = JSON.parse(JSON.stringify(this.data.goods[id]));
     good.select = {}
@@ -170,7 +178,6 @@ Page({
   },
   onLoad: function (options) {
     var that = this; //回调函数保存作用域
-    this.fetchData()
     wx.getSystemInfo({
       success(res) {
         console.log("成功获取高度：", res.windowHeight)
@@ -197,56 +204,19 @@ Page({
     this.setData({
       cartPopupVisible: true
     })
-
-
-  },
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady: function () {
-
   },
 
   /**
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function () {
-
-  },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh: function () {
-
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom: function () {
-
-  },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage: function () {
-
+    this.fetchData()
+    if (typeof this.getTabBar === 'function' && this.getTabBar()) {
+      let selected = 0;
+      this.getTabBar().setData({
+        selected
+      })
+    }
   },
   fetchData: function () {
     const db = wx.cloud.database()
@@ -267,14 +237,17 @@ Page({
     var that = this
     const db = wx.cloud.database()
     db.collection("goods").where({
-      goods_type: cid
+      goods_type: cid,
+      is_sell: true
     }).get().then(res => {
       var goods = res.data
       for (var i = 0; i < goods.length; ++i) {
         var id = goods[i].id
         that.data.goods[id] = goods[i];
+        app.globalData.goods[id] = goods[i]
       }
       that.data.goodslist[cid] = goods
+      
       that.setData({
         goodslist: that.data.goodslist
       })
@@ -377,32 +350,136 @@ Page({
     })
   },
   toPay: function () {
+    if (this.data.inproducing) {
+      return
+    }
+    this.data.inproducing = true
     const that = this;
+    const timestamp = Date.now();
+    const randomNum = Math.floor(Math.random() * 1000); // 生成随机数
+    const orderId = `ORDER_${timestamp}_${randomNum}`; // 生成订单ID
+    // that.addToDatabase(orderId);
+    // return
     wx.cloud.callFunction({
-      name: 'payOrder',  // 调用云函数生成预支付订单
+      name: 'payOrder', // 调用云函数生成预支付订单
       data: {
-        amount: that.data.totalPrice * 100,  // 支付金额
-        products: that.data.cart  // 商品信息
+        orderId: orderId,
+        amount: that.data.totalPrice * 100, // 支付金额
       },
       success: res => {
         const payment = res.result.payment;
         console.log(payment)
         wx.requestPayment({
-          ...payment,  // 传递支付参数
+          ...payment, // 传递支付参数
           success: (res) => {
-            this.setData({
-              cart: []
-            })
             console.log('支付成功', res);
+            that.addToDatabase(orderId);
           },
           fail: (err) => {
             console.error('支付失败', err);
+            this.data.inproducing = false
           }
         });
       },
       fail: err => {
         console.error('云函数调用失败', err);
+        this.data.inproducing = false
       }
     });
+  },
+  async addToDatabase(e) {
+    const orderId = e
+    const OPENID = app.globalData.userOpenId
+    const db = wx.cloud.database()
+    const cart = this.data.cart
+    var that = this
+    try {
+      const res = await wx.cloud.callFunction({
+        name: 'generateOrderId', // 云函数名称
+      });
+      if (res.result.success) {
+        const orderNumber = res.result.orderId
+        console.log(orderNumber)
+        let date = new Date();
+        // 格式化创建时间为 2020-05-09 21:30
+        var creat_date_time = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' +
+          date.getHours() + ':' + String(date.getMinutes()).padStart(2, '0');
+        // 1.插入订单表
+        db.collection("Order").add({
+          data: {
+            order_id: orderId, // 唯一订单号,
+            user_id: OPENID,
+            order_payment: false,
+            total_amount: this.data.totalPrice * 100, // 总金额
+            order_status: 0,
+            order_payment: true,
+            order_number: orderNumber,
+            order_time: creat_date_time
+          }
+        })
+        console.log("start detail")
+
+        // 2.插入订单详情表和更新商品库存
+        for (var i = 0; i < cart.length; ++i) {
+          const product = cart[i]
+          // 2.1插入订单详情表
+          await db.collection('Order_Detail').add({
+            data: {
+              order_id: orderId,
+              unit_price: product.price,
+              quantity: product.buyCount,
+              product_id: product.id,
+              product_config: product.selectstr
+            }
+          });
+        }
+        console.log("start update inventory")
+        // 3.更新商品表已售数量和库存数量
+        wx.cloud.callFunction({
+          name:'updateGoodsInventory',
+          data:{
+            goods:cart
+          },
+          success:res=>{
+            console.log("更新库存成功")
+            this.fetchData()
+          },
+          fail:err=>{
+            console.log("更新库存失败")
+            console.log(err)
+            this.data.inproducing = false
+          }
+        })
+
+        // 4.发送到打印通知
+        wx.cloud.callFunction({
+          name:'printOrderToPrinter',
+          data:{
+            orderId:orderId,
+            orderNumber:orderNumber,
+            orderPrice:this.data.totalPrice * 100,
+            orderTime:creat_date_time,
+            goods:cart
+          },
+          success :res=>{
+            console.log("打印成功")
+          },
+          fail :err=> {
+            console.log("打印失败")
+            this.data.inproducing = false
+            console.log(err)
+          }
+        })
+        this.setData({
+          cart:[],
+          totalPrice:0
+        })
+        this.data.inproducing = false
+      }
+    } catch (error) {
+      console.error('云函数调用失败:', error);
+      this.data.inproducing = false
+    }
+    return
   }
 })

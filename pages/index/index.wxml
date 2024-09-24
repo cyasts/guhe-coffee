@@ -26,8 +26,17 @@
             <view>{{product.english_name}}</view>
             <view>￥{{product.price}}</view>
           </view>
-          <view wx:if="{{product.useconfig}}" class="addcartfont" bindtap="showmodal" data-id="{{product.id}}">选规格</view>
-          <view wx:else class="iconfont icon-jia" bindtap="addcart" data-id="{{product.id}}" />
+          <view>
+            <view class="kucun">
+              <text wx:if="{{product.inventory>0}}">库存:{{product.inventory}}</text>
+              <text wx:else>库存不足</text>
+            </view>
+            <view>
+              <view wx:if="{{product.useconfig}}" class="{{product.inventory>0? 'addcartfont' : 'defenseaddcart'}}" bindtap="showmodal" data-id="{{product.id}}">选规格
+              </view>
+              <view wx:else class="iconfont icon-jia" bindtap="addcart" data-id="{{product.id}} " />
+            </view>
+          </view>
         </view>
       </view>
     </view>
@@ -58,13 +67,14 @@
           <icon bindtap="closemodal" data-id="{{product.english_name}}" type="clear" size="23" class="close-icon" />
           <!-- <view>{{product.id}}</view> -->
           <image class="img" src="{{good.pic}}" />
-          <view class="title">{{good.name}}</view>
+          <!-- <view class="title">{{good.name}}</view> -->
           <view wx:if="{{good.useconfig}}">
             <!-- 自定义组件menu 监听选择项 -->
             <view wx:for="{{good.config}}" wx:for-index="key" wx:for-item="value">
               <menu list="{{value}}" name="{{key}}" bind:choose="choose" />
             </view>
-            <view class="intro">{{product.content}}</view>
+            <view class="intro">{{good.content}}</view>
+            <view class="inventory">库存 : {{good.inventory}}</view>
           </view>
           <view class="P2">
             <view> {{good.name}}</view>
@@ -106,7 +116,7 @@
             </view>
           </view>
           <view class="product_count_price">
-            <text class="product_price">{{item.price}}</text>
+            <text class="product_price">￥{{item.price}}</text>
             <view class="product_count">
               <view class="counter">
                 <view class="btn jian" bindtap="decreaseCartItem" data-id="{{item.id}}" data-select="{{item.select}}">-</view>

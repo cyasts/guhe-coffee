@@ -14,12 +14,13 @@ const _ = db.command
 exports.main = async (event, context) => {
   const wxContext = cloud.getWXContext()  // 获取微信调用上下文，包括 openid
   const openid = wxContext.OPENID         // 当前用户的 openid
-
+  console.log(openid)
   try {
     // 查询订单表中的订单
     const orderRes = await db.collection('Order')
       .where({
-        user_id: openid  // 根据 openid 过滤订单
+        user_id: openid,  // 根据 openid 过滤订单
+        order_payment:true
       })
       .get()
 

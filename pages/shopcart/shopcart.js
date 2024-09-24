@@ -34,20 +34,7 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function() {
-    wx.cloud.callFunction({
-      name: 'getMakingOrderByUser',  // 云函数的名字
-      success: res => {
-        if (res.result.success) {
-          console.log('订单信息:', res.result.data)
-          // 这里可以处理获取到的订单信息
-        } else {
-          console.error('查询订单失败:', res.result.errorMessage)
-        }
-      },
-      fail: err => {
-        console.error('云函数调用失败', err)
-      }
-    })
+    
     
   },
 

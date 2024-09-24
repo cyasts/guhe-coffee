@@ -12,16 +12,11 @@ const _ = db.command
 
 // 云函数入口函数
 exports.main = async (event, context) => {
-  const wxContext = cloud.getWXContext()  // 获取微信调用上下文，包括 openid
-  const openid = wxContext.OPENID         // 当前用户的 openid
-
   try {
     // 查询订单表中的订单
     const orderRes = await db.collection('Order')
       .where({
-        user_id: openid,  // 根据 openid 过滤订单
         order_payment: true,
-        order_status:_.in([0, 1])
       })
       .get()
 

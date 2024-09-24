@@ -1,0 +1,61 @@
+<!--pages/order/order.wxml-->
+<view class="order_cntainer">
+  <view class="order_tab">
+    <view class="making_order {{pageState==='making'? 'active_order' : '' }}" bindtap="changeState" data-state="making">待制作订单</view>
+    <view class="taking_order  {{pageState==='taking'? 'active_order' : '' }}" bindtap="changeState" data-state="taking">待取餐订单</view>
+    <view class="finish_order  {{pageState==='finish'? 'active_order' : '' }}" bindtap="changeState" data-state="finish">已完成订单</view>
+  </view>
+  <!-- 订单列表 -->
+  <view wx:if="{{disOrder.length > 0}}">
+    <view class="order_list">
+      <view class="order_list_item" wx:for="{{disOrder}}">
+        <view class="order_info">
+          <view class="order_shop_name">故禾咖啡</view>
+          <view class="order_status">
+            <view wx:if="{{item.order_status == 0}}">
+              待制作
+            </view>
+            <view wx:if="{{item.order_status == 1}}">
+              待取餐
+            </view>
+            <view wx:if="{{item.order_status == 2}}">
+              已完成
+            </view>
+          </view>
+        </view>
+        <view class="order_image" wx:for="{{item.details}}" wx:for-item="detail">
+          <image src="{{detail.goods.pic}}" mode="" />
+          <view class="order_info_list" >
+            <view class="order_info_list_container">
+              <text style="display:inline-block; width: 22%;">{{detail.goods.name}}</text>
+              <text style="display:inline-block; width: 22%;">{{detail.product_config}}</text>
+              <text style="display:inline-block; width: 22%;text-align: right;">x{{detail.quantity}}</text>
+              <text style="display:inline-block; width: 22%;text-align: right;">￥{{detail.unit_price}}</text>
+            </view>
+          </view>
+        </view>
+        <view class="order_details_info">
+          <view class="order_details">
+            <view class="order_number">订单编号：{{item.order_id}}</view>
+            <view class="order_time">下单时间：{{item.order_time}}</view>
+            <view class="{{item.order_status !== 2 ? 'order_number_price' : 'order_number_price_one'}}">
+              <view class="order_ordernumber" wx:if="{{item.order_status !== 2}}">取单号：{{item.order_number}}</view>
+              <view class="order_price">总计:￥{{item.total_amount / 100}}</view>
+            </view>
+          </view>
+        </view>
+        <view class="order_btn" wx:if="{{pageState == 'making' || pageState == 'taking'}}">
+          <view class="invoice active">
+            <text wx:if="{{pageState == 'making'}}" bindtap="updateState" data-id="{{item.order_id}}">制作完成</text> 
+            <text wx:elif="{{pageState == 'taking'}}" bindtap="updateState" data-id="{{item.order_id}}">取餐完成</text> 
+            <!-- <text wx:elif="{{pageState === 'taking'}}">取餐完成</text>  -->
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+  <view class="no_order" wx:else>
+    <view>当前分类无订单</view>
+  </view>
+
+</view>

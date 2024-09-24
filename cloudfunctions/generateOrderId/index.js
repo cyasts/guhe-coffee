@@ -1,6 +1,8 @@
 // 云函数 generateOrderId
 const cloud = require('wx-server-sdk');
-cloud.init();
+cloud.init({
+  env: cloud.DYNAMIC_CURRENT_ENV
+});
 
 const db = cloud.database();
 const _ = db.command;
